@@ -47,6 +47,51 @@
 
 V 1.0.1
 
+## 核心说明
+
+#### 关于com.fasterxml.jackson.databind.JsonMappingException: could not initialize proxy - no Session错误的解决
+
+这个错误出现的原因是在一对多情况下的查询,例如:一个Users对应多个Lxrs,那么当根据userid/uname获得其所有联系人时,会出现该错误。<br/>
+
+那么解决方案是如下:
+
+1.引入jackson-datatype-hibernate4第三方类库,Maven如下:<br/>
+
+```xml
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-hibernate4</artifactId>
+      <version>2.7.4</version>
+    </dependency>
+```
+
+2.创建一个自定义类,例如:MyConfigClass类<br/>
+
+```java
+public class HibernateAwareObjectMapper extends ObjectMapper {
+
+    public HibernateAwareObjectMapper() {
+        registerModule(new Hibernate4Module());
+    }
+}
+```
+
+3.在SpringMVC核心配置文件中(mvc-dispatcher-servlet.xml),配置如下信息:<br/>
+
+```xml
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- Use the HibernateAware mapper instead of the default -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="path.to.your.HibernateAwareObjectMapper" />
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+```
+
+
 ## 修改日志
 - 2016-8-28:
 - [x] 创建演示项目,并对一些配置文件进行了注解。
