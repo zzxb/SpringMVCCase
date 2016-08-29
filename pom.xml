@@ -147,6 +147,13 @@
       <version>${jacksonForJSON.version}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-hibernate4 -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-hibernate4</artifactId>
+      <version>2.7.4</version>
+    </dependency>
+
 
   </dependencies>
   <build>
