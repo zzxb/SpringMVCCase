@@ -68,9 +68,9 @@ V 1.0.1
 2.创建一个自定义类,例如:MyConfigClass类<br/>
 
 ```java
-public class HibernateAwareObjectMapper extends ObjectMapper {
+public class MyConfigClass extends ObjectMapper {
 
-    public HibernateAwareObjectMapper() {
+    public MyConfigClass() {
         registerModule(new Hibernate4Module());
     }
 }
@@ -84,12 +84,99 @@ public class HibernateAwareObjectMapper extends ObjectMapper {
             <!-- Use the HibernateAware mapper instead of the default -->
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper">
-                    <bean class="path.to.your.HibernateAwareObjectMapper" />
+                    <bean class="me.zzxb.tools.MyConfigClass" />
                 </property>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 ```
+
+#### 关于引入Hibernate4版本之后,SpringMVC操作非查询操作时,需要提供Spring AOP等事物操作。<br/>
+
+1.引入相关依赖.Maven<br/>
+
+```xml
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>4.1.6.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>4.1.6.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>4.1.6.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>4.1.6.RELEASE</version>
+    </dependency>
+```
+2.在applicationContext.xml文件中,配置事物处理。<br/>
+
+```xml
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="del*" propagation="REQUIRED" />
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="page*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="createHQLQuery" propagation="REQUIRED" />
+            <tx:method name="createSQLQuery" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <!--* me.zzxb.service.*.*(..)的意思是:me.zzxb.service包下的所有类的所有方法-->
+        <aop:pointcut id="txPointcut" expression="execution(* me.zzxb.service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+```
+
+3.在mvc-dispatcher-servlet.xml文件中引入applicationContext.xml<br/>
+
+```xml
+    <import resource="classpath:applicationContext.xml"/>
+```
+
+#### 关于控制层(controller)返回JSON类型(@ResponseBody)
+
+返回JSON类型需要引入jackson相关包的引入,Maven
+
+```xml
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>${jacksonForJSON.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+          <version>${jacksonForJSON.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+          <version>${jacksonForJSON.version}</version>
+        </dependency>
+```
+
 
 
 ## 修改日志
