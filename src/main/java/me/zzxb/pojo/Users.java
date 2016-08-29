@@ -1,5 +1,8 @@
 package me.zzxb.pojo;
 
+
+
+
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -11,7 +14,18 @@ public class Users {
     private String uname;
     private String upwd;
     private Timestamp addtime;
+
     private Collection<Txls> txlsesByUserid;
+
+    public Users() {
+    }
+
+    public Users(int userid, String uname, String upwd, Timestamp addtime) {
+        this.userid = userid;
+        this.uname = uname;
+        this.upwd = upwd;
+        this.addtime = addtime;
+    }
 
     public Users(String uname, String upwd) {
         this.uname = uname;

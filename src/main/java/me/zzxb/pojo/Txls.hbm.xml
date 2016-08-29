@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="me.zzxb.pojo.Txls" table="Txls" schema="SkDB">
+    <class name="me.zzxb.pojo.Txls" table="Txls" schema="SkDB" dynamic-insert="true">
         <id name="txlid">
             <column name="txlid" sql-type="int(8)"/>
         </id>

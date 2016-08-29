@@ -12,6 +12,14 @@ public class Txls {
     private Timestamp addtime;
     private Users usersByUserid;
 
+    public Txls() {
+    }
+
+    public Txls(String lxrname, String lxrtel) {
+        this.lxrname = lxrname;
+        this.lxrtel = lxrtel;
+    }
+
     public int getTxlid() {
         return txlid;
     }

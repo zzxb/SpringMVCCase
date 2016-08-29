@@ -1,7 +1,10 @@
 package me.zzxb.controller;
 
+import me.zzxb.pojo.Txls;
 import me.zzxb.pojo.Users;
 import me.zzxb.service.UsersService;
+
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +38,13 @@ public class UsersCtrl {
         Map<String,String> data = new HashMap<String,String>();
         data.put("state","1");
         data.put("info","插入成功!");
+        return data;
+    }
+
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public List<Txls> listTxlsByUserName(String uname){
+        List<Txls> data = usersService.getTxlsByUserName(uname);
         return data;
     }
 }
