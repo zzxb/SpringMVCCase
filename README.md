@@ -49,6 +49,93 @@ V 1.0.1
 
 ## 核心说明
 
+#### 关于创建一个基于SpringMVC框架的项目基本流程：
+
+1.导入相关SpringMVC依赖的包(建议使用Maven的方式构建整个工程).
+
+2.配置web.xml文件,将DispatcherServlet配置
+
+```
+  <servlet>
+    <servlet-name>mvc-dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>mvc-dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+```
+
+3.同时，配置过滤字符集的Filter,在web.xml中
+
+```
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+```
+
+4.创建一个根package,例如：me.zzxb.service/controller/domain/....
+
+5.创建一个名为[servlet-name]-servlet.xml,例如：mvc-dispatcher-servlet.xml在WEB-INF目录下。
+
+6.配置基本的配置信息,例如：
+
+```xml
+    <!--扫描所有具有注解的类-->
+    <context:component-scan base-package="me.zzxb.*"/>
+    <!--静态资源访问-->
+    <mvc:default-servlet-handler/>
+    <context:annotation-config />
+    <!--开启注解模式-->
+    <mvc:annotation-driven/>
+
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+```
+
+7.创建控制层，模型层等模块，注意，控制层要加@Controller,模型层为@Service
+
+#### 关于一些常用注解
+
+1.@Controller,表示该类为控制层类
+
+2.@Service,表示该类为模型层
+
+3.@RequestMapping:是在控制层中的核心注解，比如：
+
+```java
+
+@RequestMapping(value = "/main",method = RequestMethod.GET)
+
+```
+
+value为请求地址，method为可接受请求类型(可省略),同时，Controller类也可以，使用@RequestMapping注解
+
+4.@RequestParam:指定请求参数名
+
+5.@ResponseBody:指定响应报文体为JSON类型
+
+
 #### 关于com.fasterxml.jackson.databind.JsonMappingException: could not initialize proxy - no Session错误的解决
 
 这个错误出现的原因是在一对多情况下的查询,例如:一个Users对应多个Lxrs,那么当根据userid/uname获得其所有联系人时,会出现该错误。<br/>
@@ -178,10 +265,16 @@ public class MyConfigClass extends ObjectMapper {
 ```
 
 
+一般，返回的类型为:Map<String,Object>，SpringMVC会自动将其转换为JSON格式。
+
+建议：返回的消息体中至少包含两部分：状态部分以及数据体(state/data)
+
 
 ## 修改日志
 - 2016-8-28:
 - [x] 创建演示项目,并对一些配置文件进行了注解。
+- 2016-9-13:
+- [x] 新增了对SpringMVC基本流程步骤的说明
 
 ## 参考资源
 以下是在编写案例中收集的资源,对深入理解与运用有帮助
