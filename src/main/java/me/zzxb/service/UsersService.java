@@ -22,6 +22,24 @@ public class UsersService {
         return true;
     }
 
+    public boolean updateUsers(String uname,String upwd,String newUpwd){
+        Users myUser = this.findByUserName(uname);
+        if(myUser != null){
+            if(myUser.getUpwd().equals(upwd)){
+                myUser.setUpwd(newUpwd);
+                hibernateTemplate.saveOrUpdate(myUser);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean delUsers(int uid){
+        String hsql = "delete Users u where u.userid = ?";
+        hibernateTemplate.bulkUpdate(hsql,uid);
+        return true;
+    }
+
     public Users findByUserName(String userName){
         String hsql = "from Users u where u.uname = ?";
         List<?> data = hibernateTemplate.find(hsql,userName);
