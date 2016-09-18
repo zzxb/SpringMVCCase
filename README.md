@@ -135,6 +135,17 @@ value为请求地址，method为可接受请求类型(可省略),同时，Contro
 
 5.@ResponseBody:指定响应报文体为JSON类型
 
+6.@PathVariable:制定路径类型的参数名
+
+例如：
+
+```java
+
+    @RequestMapping(value = "/del/{uid}",method = RequestMethod.DELETE)
+    @ResponseBody
+    public Map<String,Object> delUsers(@PathVariable String uid)
+
+```
 
 #### 关于com.fasterxml.jackson.databind.JsonMappingException: could not initialize proxy - no Session错误的解决
 
@@ -269,12 +280,26 @@ public class MyConfigClass extends ObjectMapper {
 
 建议：返回的消息体中至少包含两部分：状态部分以及数据体(state/data)
 
+#### 关于Restful中标准请求（GET,POST,PUT,DELETE）
+
+1.GET用于处理查询
+
+2.POST用于新增
+
+3.PUT用于更新
+
+4.DELETE用于删除
+
+请求消息体的格式：/users/delete/{参数值}
+
 
 ## 修改日志
 - 2016-8-28:
 - [x] 创建演示项目,并对一些配置文件进行了注解。
 - 2016-9-13:
 - [x] 新增了对SpringMVC基本流程步骤的说明
+- 2016-9-18:
+- [x] 新增了Restful标准请求(GET,POST,PUT,DELETE)的处理
 
 ## 参考资源
 以下是在编写案例中收集的资源,对深入理解与运用有帮助
