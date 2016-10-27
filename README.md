@@ -300,6 +300,8 @@ public class MyConfigClass extends ObjectMapper {
 - [x] 新增了对SpringMVC基本流程步骤的说明
 - 2016-9-18:
 - [x] 新增了Restful标准请求(GET,POST,PUT,DELETE)的处理
+- 2016-10-26:
+- [x] 新增了对HttpSession，控制层重定向以及JSTL的支持
 
 ## 参考资源
 以下是在编写案例中收集的资源,对深入理解与运用有帮助
