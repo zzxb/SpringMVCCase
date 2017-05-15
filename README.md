@@ -280,6 +280,63 @@ public class MyConfigClass extends ObjectMapper {
 
 建议：返回的消息体中至少包含两部分：状态部分以及数据体(state/data)
 
+#### 关于JNDI的配置
+
+1.首先，在Tomcat中的lib目录中添加数据库驱动包和连接池包
+
+2.配置conf/context.xml文件
+
+```
+
+<Resource
+        name="jdbc/skmysql"
+        factory="com.alibaba.druid.pool.DruidDataSourceFactory"
+        auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://127.0.0.1:3306/skdb?useUnicode=true&amp;characterEncoding=utf-8"
+        username="root"
+        password="qaz123"
+        initialSize="5"
+        maxActive="200"
+        maxWait="60000"
+        minIdle="1"
+        timeBetweenEvictionRunsMillis="60000"
+        minEvictableIdleTimeMillis="300000"
+        testWhileIdle="true"
+        testOnBorrow="false"
+        testOnReturn="false"
+        poolPreparedStatements="true"
+        maxOpenPreparedStatements="20"
+        filters="stat"/>
+
+```
+
+3.配置需要引入JNDI的项目中的web.xml
+
+```
+  <resource-ref>
+    <description>MySQL DB Connection</description>
+    <res-ref-name>jdbc/skmysq</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+```
+
+注意：res-ref-name标签值要与context文件name值一致。
+
+比如：
+
+```
+<Resource
+        name="jdbc/skmysql"
+```
+
+```
+  <resource-ref>
+    <res-ref-name>jdbc/skmysq</res-ref-name>
+```
+
 #### 关于Restful中标准请求（GET,POST,PUT,DELETE）
 
 1.GET用于处理查询
